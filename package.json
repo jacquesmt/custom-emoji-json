@@ -1,6 +1,6 @@
 {
   "name": "custom-emoji-json",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Small description for custom-emoji-json goes here",
   "license": "MIT",
   "author": "",
@@ -10,12 +10,13 @@
   },
   "repository": "",
   "scripts": {
-    "build": "ember build",
-    "start": "ember server",
+    "build": "cp dist/app/utils/emojiJson.js app/utils && ember build",
+    "start": "npm run build && ember server",
     "test": "ember test"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
+    "broccoli-json-module": "^1.0.0",
     "ember-ajax": "^2.4.1",
     "ember-cli": "2.11.1",
     "ember-cli-app-version": "^2.0.0",
@@ -25,6 +26,8 @@
     "ember-cli-htmlbars-inline-precompile": "^0.3.6",
     "ember-cli-inject-live-reload": "^1.4.1",
     "ember-cli-jshint": "^2.0.1",
+    "ember-cli-json-module": "0.0.3",
+    "ember-cli-less": "^1.5.5",
     "ember-cli-qunit": "^3.0.1",
     "ember-cli-release": "^0.2.9",
     "ember-cli-shims": "^1.0.2",
@@ -37,6 +40,7 @@
     "ember-resolver": "^2.0.3",
     "ember-source": "~2.11.0",
     "ember-welcome-page": "^2.0.2",
+    "emoji.json": "^5.0.0",
     "loader.js": "^4.0.10"
   },
   "engines": {

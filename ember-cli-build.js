@@ -1,10 +1,20 @@
 /*jshint node:true*/
 /* global require, module */
+const json = require('broccoli-json-module');
+const emoji = require('emoji.json');
+const mergeTrees = require('broccoli-merge-trees');
+
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
+var writeFile = require('broccoli-file-creator');
 
 module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
     // Add options here
+    lessOptions: {
+      paths: [
+          'app/components'
+      ]
+    }
   });
 
   // Use `app.import` to add additional libraries to the generated
@@ -20,5 +30,13 @@ module.exports = function(defaults) {
   // please specify an object with the list of modules as keys
   // along with the exports of each module as its value.
 
-  return app.toTree();
+  var emojiJson = writeFile('/app/utils/emojiJson.json', JSON.stringify(emoji));
+  var emojiJsonModule = json(emojiJson);
+
+  return mergeTrees([
+      emojiJsonModule,
+      app.toTree()
+  ], {
+      overwrite: true
+  });
 };
