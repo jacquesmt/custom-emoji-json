@@ -14,6 +14,7 @@ export default Ember.Component.extend({
   showObjectsList: false,
   showPlacesList: false,
   showSymbolsList: false,
+  emojiJsonToExport: null,
 
   actions: {
     toggleList(list) {
@@ -34,6 +35,43 @@ export default Ember.Component.extend({
           this.toggleProperty('showSymbolsList');
           return;
       }
+    },
+    generateJson() {
+      const jsonToExport = {};
+
+      jsonToExport.people = _.map(this.get('emojiList').filter((item) => {
+        if (Ember.get(item, 'category') === 'people') {
+          return Ember.get(item, 'char');
+        }
+      }), 'char');
+
+      jsonToExport.nature = _.map(this.get('emojiList').filter((item) => {
+        if (Ember.get(item, 'category') === 'nature') {
+          return Ember.get(item, 'char');
+        }
+      }), 'char');
+
+      jsonToExport.objects = _.map(this.get('emojiList').filter((item) => {
+        if (Ember.get(item, 'category') === 'objects') {
+          return Ember.get(item, 'char');
+        }
+      }), 'char');
+
+      jsonToExport.places = _.map(this.get('emojiList').filter((item) => {
+        if (Ember.get(item, 'category') === 'places') {
+          return Ember.get(item, 'char');
+        }
+      }), 'char');
+
+      jsonToExport.symbols = _.map(this.get('emojiList').filter((item) => {
+        if (Ember.get(item, 'category') === 'symbols') {
+          return Ember.get(item, 'char');
+        }
+      }), 'char');
+
+      this.set('emojiJsonToExport', jsonToExport);
+
+      console.log('Exporting emoji JSON', this.get('emojiJsonToExport'));
     }
   },
 
@@ -50,6 +88,7 @@ export default Ember.Component.extend({
   init() {
     this._super(...arguments);
     this.set('emojiList', emojiJson);
+    this.set('emojiJsonToExport', []);
     this.initCategory();
     console.log('JMT REference to component =>', this);
   },
