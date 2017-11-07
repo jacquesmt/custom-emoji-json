@@ -5,33 +5,34 @@
   .emoji-list {
     display: flex;
     flex: 2 0 auto;
-    height: 1000px;
-    overflow: hidden;
-    flex-direction: column;
-    width: 40%;
-    margin: 30px;
-    background-color: dimgray;
-    position: relative;
-  }
-
-  .emoji-list-container {
-    position: absolute;
-    overflow-y: scroll;
     height: 950px;
-    /* right: -15px; */ /* to hide scroll bar*/
-    padding-bottom: 75px;
+    overflow-y: scroll;
+    flex-direction: column;
+    min-width: 60%;
+    margin: 0px 15px;
+    background-color: dimgray;
   }
 
   .emoji-list-views {
     display: flex;
     flex-direction: row;
+    align-self: center;
   }
 
   .emoji-category-list {
-    width: 60%;
-    margin: 30px;
+    width: 40%;
+    margin: 0px 15px;
     background-color: dimgray;
+    min-width: 400px;
     height: fit-content;
+  }
+
+  input[type="radio"] {
+    margin-right: 10px;
+  }
+
+  .emoji-category-list .total-count-label {
+    margin-left: 10px;
   }
 
   .emoji-category-list-label {
@@ -42,7 +43,7 @@
   }
 
   .emoji-category-list-item {
-    font-size: 13px;
+    font-size: 14px;
     margin: 10px;
   }
 
@@ -56,7 +57,8 @@
     flex-direction: row;
     justify-content: space-between;
     flex: 1 0 auto;
-    margin: 15px;
+    padding: 7px;
+    border-bottom: .5px inset gray;
   }
 
   .emoji-items .emoji-item {
@@ -73,10 +75,6 @@
     min-width: 250px;
     word-wrap: unset;
     flex: 0 1 0;
-  }
-
-  .emoji-item.emoji-category {
-      flex: 1 0 auto;
   }
 
   .emoji-export {
