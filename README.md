@@ -39,6 +39,8 @@ Make use of the many generators for code, try `ember help generate` for more det
 * `ember build` (development)
 * `ember build --environment production` (production)
 
+* `npm run start` to run on local server
+
 ### Deploying
 
 Specify what it takes to deploy your app.

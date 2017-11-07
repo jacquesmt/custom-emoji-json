@@ -5,7 +5,7 @@
   .emoji-list {
     display: flex;
     flex: 2 0 auto;
-    height: 600px;
+    height: 1000px;
     overflow-y: auto;
     flex-direction: column;
     width: 40%;
@@ -27,9 +27,12 @@
   }
 
   .emoji-category-list-item {
+    font-size: 13px;
+  }
+
+  .emoji-category-list-item .category-list {
     height: 300px;
     overflow: auto;
-    font-size: 13px;
   }
 
   .emoji-items {
@@ -49,8 +52,15 @@
     align-self: center;
   }
 
-  .emoji-items .emoji-name {
+  .emoji-items .emoji-description {
     align-self: center;
+    min-width: 250px;
+    word-wrap: unset;
+    flex: 0 1 0;
+  }
+
+  .emoji-item.emoji-category {
+      flex: 1 0 auto;
   }
 
   .emoji-export {
