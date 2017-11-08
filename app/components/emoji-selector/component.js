@@ -48,7 +48,8 @@ export default Ember.Component.extend(FileSaverMixin, {
   placesList: computed.filterBy('emojiList', 'category', 'places'),
   symbolsList: computed.filterBy('emojiList', 'category', 'symbols'),
   fileName: 'emoji-generated.json',
-  contentType: "text/plain; charset=utf-8", //data:application/json;charset=UTF-8
+  contentType: "text/plain; charset=utf-8",
+
   generateJson() {
     const jsonToExport = {};
 
