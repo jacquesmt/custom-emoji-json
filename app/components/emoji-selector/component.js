@@ -1,11 +1,12 @@
 import Ember from 'ember';
 import emojiJson from '../../utils/emojiJson';
+import FileSaverMixin from 'ember-cli-file-saver/mixins/file-saver';
 
 const {
   computed,
 } = Ember;
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(FileSaverMixin, {
   classNames: ['emoji-selector'],
   emojiList: null,
 
@@ -37,41 +38,7 @@ export default Ember.Component.extend({
       }
     },
     generateJson() {
-      const jsonToExport = {};
-
-      jsonToExport.people = _.map(this.get('emojiList').filter((item) => {
-        if (Ember.get(item, 'category') === 'people') {
-          return Ember.get(item, 'char');
-        }
-      }), 'char');
-
-      jsonToExport.nature = _.map(this.get('emojiList').filter((item) => {
-        if (Ember.get(item, 'category') === 'nature') {
-          return Ember.get(item, 'char');
-        }
-      }), 'char');
-
-      jsonToExport.objects = _.map(this.get('emojiList').filter((item) => {
-        if (Ember.get(item, 'category') === 'objects') {
-          return Ember.get(item, 'char');
-        }
-      }), 'char');
-
-      jsonToExport.places = _.map(this.get('emojiList').filter((item) => {
-        if (Ember.get(item, 'category') === 'places') {
-          return Ember.get(item, 'char');
-        }
-      }), 'char');
-
-      jsonToExport.symbols = _.map(this.get('emojiList').filter((item) => {
-        if (Ember.get(item, 'category') === 'symbols') {
-          return Ember.get(item, 'char');
-        }
-      }), 'char');
-
-      this.set('emojiJsonToExport', jsonToExport);
-
-      console.log('Exporting emoji JSON', this.get('emojiJsonToExport'));
+      this.generateJson();
     }
   },
 
@@ -80,6 +47,48 @@ export default Ember.Component.extend({
   objectsList: computed.filterBy('emojiList', 'category', 'objects'),
   placesList: computed.filterBy('emojiList', 'category', 'places'),
   symbolsList: computed.filterBy('emojiList', 'category', 'symbols'),
+  fileName: 'emoji-generated.json',
+  contentType: "text/plain; charset=utf-8", //data:application/json;charset=UTF-8
+  generateJson() {
+    const jsonToExport = {};
+
+    jsonToExport.people = _.map(this.get('emojiList').filter((item) => {
+      if (Ember.get(item, 'category') === 'people') {
+        return Ember.get(item, 'char');
+      }
+    }), 'char');
+
+    jsonToExport.nature = _.map(this.get('emojiList').filter((item) => {
+      if (Ember.get(item, 'category') === 'nature') {
+        return Ember.get(item, 'char');
+      }
+    }), 'char');
+
+    jsonToExport.objects = _.map(this.get('emojiList').filter((item) => {
+      if (Ember.get(item, 'category') === 'objects') {
+        return Ember.get(item, 'char');
+      }
+    }), 'char');
+
+    jsonToExport.places = _.map(this.get('emojiList').filter((item) => {
+      if (Ember.get(item, 'category') === 'places') {
+        return Ember.get(item, 'char');
+      }
+    }), 'char');
+
+    jsonToExport.symbols = _.map(this.get('emojiList').filter((item) => {
+      if (Ember.get(item, 'category') === 'symbols') {
+        return Ember.get(item, 'char');
+      }
+    }), 'char');
+
+    this.set('emojiJsonToExport', jsonToExport);
+
+    console.log('Exporting emoji JSON', this.get('emojiJsonToExport'));
+
+    const content = JSON.stringify(this.get('emojiJsonToExport'));
+    this.saveFileAs(this.get('fileName'), content, this.get('contentType'));
+  },
 
   totalCount: computed('peopleList.length', 'natureList.length', 'objectsList.length', 'placesList.length', 'symbolsList.length', function () {
     return this.get('peopleList.length') + this.get('natureList.length') + this.get('objectsList.length') + this.get('placesList.length') + this.get('symbolsList.length');

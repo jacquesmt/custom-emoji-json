@@ -1,57 +1,58 @@
 <div class="emoji-list-views">
-  <div class="emoji-list">
-      {{#each emojiList as |emoji|}}
-        <div class="emoji-items">
-          <div class="emoji-item emoji-char"> <span>{{emoji.char}}</span></div>
-          <div class="emoji-item emoji-description">
-            <div class="emoji-description-name"> {{emoji.name}} </div>
-            <div class="emoji-description-code"> {{emoji.code}} </div>
-            <div class="emoji-description-no"> {{emoji.no}} </div>
-          </div>
+  <div class="emoji-list-wrapper">
+    <div class="emoji-list">
+        {{#each emojiList as |emoji|}}
+          <div class="emoji-items">
+            <div class="emoji-item emoji-char"> <span>{{emoji.char}}</span></div>
+            <div class="emoji-item emoji-description">
+              <div class="emoji-description-name"> {{emoji.name}} </div>
+              <div class="emoji-description-code"> {{emoji.code}} </div>
+              <div class="emoji-description-no"> {{emoji.no}} </div>
+            </div>
 
-          <div class="emoji-item emoji-category">
-            <div class="category-item"> {{radio-button checked=emoji.category value='people'}}People</div>
-            <div class="category-item"> {{radio-button checked=emoji.category value='nature'}}Nature</div>
-            <div class="category-item"> {{radio-button checked=emoji.category value='objects'}}Objects</div>
-            <div class="category-item"> {{radio-button checked=emoji.category value='places'}}Places</div>
-            <div class="category-item"> {{radio-button checked=emoji.category value='symbols'}}Symbols</div>
-            <div class="category-item"> {{radio-button checked=emoji.category }}none</div>
+            <div class="emoji-item emoji-category">
+              <div class="category-item"> {{radio-button checked=emoji.category value='people'}}People</div>
+              <div class="category-item"> {{radio-button checked=emoji.category value='nature'}}Nature</div>
+              <div class="category-item"> {{radio-button checked=emoji.category value='objects'}}Objects</div>
+              <div class="category-item"> {{radio-button checked=emoji.category value='places'}}Places</div>
+              <div class="category-item"> {{radio-button checked=emoji.category value='symbols'}}Symbols</div>
+              <div class="category-item"> {{radio-button checked=emoji.category }}none</div>
+            </div>
           </div>
-        </div>
-      {{/each}}
+        {{/each}}
+    </div>
+    <div class="emoji-export">
+      <a class="emoji-export-btn" {{action "generateJson"}}>
+        <span class="button-label" > Download new Emoji Json </span>
+      </a>
+    </div>
   </div>
 
   <div class="emoji-category-list">
     <p class="total-count-label"> {{totalCount}} selected emoji(s).</p>
     <div class="emoji-category-list-item people">
-      <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" 'people'}}>People ({{peopleList.length}})</a>
+      <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" "people"}}>People ({{peopleList.length}})</a>
       {{emoji-listing showList=showPeopleList emojiList=peopleList}}
     </div>
 
     <div class="emoji-category-list-item nature">
-      <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" 'nature'}}>Nature ({{natureList.length}})</a>
+      <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" "nature"}}>Nature ({{natureList.length}})</a>
       {{emoji-listing showList=showNatureList emojiList=natureList}}
     </div>
 
     <div class="emoji-category-list-item objects">
-      <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" 'objects'}}>Objects ({{objectsList.length}})</a>
+      <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" "objects"}}>Objects ({{objectsList.length}})</a>
       {{emoji-listing showList=showObjectsList emojiList=objectsList}}
     </div>
 
     <div class="emoji-category-list-item places">
-      <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" 'places'}}>Places ({{placesList.length}})</a>
+      <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" "places"}}>Places ({{placesList.length}})</a>
       {{emoji-listing showList=showPlacesList emojiList=placesList}}
     </div>
 
     <div class="emoji-category-list-item symbols">
-      <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" 'symbols'}}>Symbols ({{symbolsList.length}})</a>
+      <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" "symbols"}}>Symbols ({{symbolsList.length}})</a>
       {{emoji-listing showList=showSymbolsList emojiList=symbolsList}}
     </div>
   </div>
-</div>
-
-<div class="emoji-export">
-  <button class="emoji-export-btn" type='button'>
-    <span class="button-label" {{action 'generateJson'}}> Download </span>
-  </button>
 </div>
