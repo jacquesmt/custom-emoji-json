@@ -42,6 +42,7 @@
     "ember-source": "~2.11.0",
     "ember-welcome-page": "^2.0.2",
     "emoji.json": "^5.0.0",
+    "liquid-fire": "0.29.0",
     "loader.js": "^4.0.10"
   },
   "engines": {
