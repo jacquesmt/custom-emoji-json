@@ -154,7 +154,11 @@ export default Ember.Component.extend(FileSaverMixin, {
     }
     const searchText = this.get('textSearch');
     return _.filter(this.get('emojiList'), (emoji) => {
-      return  emoji.name.indexOf(searchText) >= 0;
+      const evaluate = (emoji.name.toLowerCase().indexOf(searchText.toLowerCase()) >= 0 ||
+        (emoji.no+"").toLowerCase().indexOf(searchText.toLowerCase()) >= 0 ||
+        emoji.char.toLowerCase().indexOf(searchText.toLowerCase()) >= 0 ||
+        emoji.code.toLowerCase().indexOf(searchText.toLowerCase()) >= 0);
+      return evaluate;
     });
   }),
 
