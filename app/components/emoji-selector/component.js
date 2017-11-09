@@ -74,6 +74,7 @@ export default Ember.Component.extend(FileSaverMixin, {
       }
 
       this.setStartIndex();
+      $('.emoji-list').scrollTop(0);
 
       console.log('Current page is', page);
       console.log('Start index is ', this.get('startIndex'));
