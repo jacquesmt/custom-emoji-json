@@ -2,6 +2,19 @@
   display: flex;
   flex-direction: column;
 
+  &.empty-search-result .emoji-list,
+  &.empty-search-result .emoji-export {
+    display:none;
+  }
+
+  .emoji-search {
+      margin: 0px 15px 15px;
+      height: 17px;
+      font-size: 18px;
+      padding: 10px;
+      color: gray;
+  }
+
   .emoji-list-wrapper {
     display: flex;
     flex-direction: column;
@@ -93,8 +106,8 @@
     background-color: bisque;
     width: fit-content;
     color: gray;
-    padding: 5px;
-    font-size: 14px;
+    padding: 8px;
+    font-size: 18px;
     cursor: pointer;
   }
 

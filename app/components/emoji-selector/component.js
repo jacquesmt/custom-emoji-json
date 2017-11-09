@@ -7,6 +7,7 @@ const {
 } = Ember;
 
 export default Ember.Component.extend(FileSaverMixin, {
+  classNameBindings: ['emptySearchResult'],
   classNames: ['emoji-selector'],
   emojiList: null,
 
@@ -16,6 +17,10 @@ export default Ember.Component.extend(FileSaverMixin, {
   showPlacesList: false,
   showSymbolsList: false,
   emojiJsonToExport: null,
+  textSearch: null,
+
+  startIndex: 0,
+  endIndex: emojiJson.length,
 
   actions: {
     toggleList(list) {
@@ -95,12 +100,26 @@ export default Ember.Component.extend(FileSaverMixin, {
     return this.get('peopleList.length') + this.get('natureList.length') + this.get('objectsList.length') + this.get('placesList.length') + this.get('symbolsList.length');
   }),
 
+  filteredSearch: computed('emojiList', 'textSearch', function () {
+    if (_.isEmpty(this.get('textSearch'))) {
+      return this.get('emojiList');
+    }
+    const searchText = this.get('textSearch');
+    return _.filter(this.get('emojiList'), (emoji) => {
+      return  emoji.name.indexOf(searchText) >= 0;
+    });
+  }),
+
+  emptySearchResult: computed.equal('filteredSearch.length', 0),
+
   init() {
     this._super(...arguments);
-    this.set('emojiList', emojiJson);
+    this.set('emojiList', _.slice(emojiJson, 1, 500));
+    // this.set('emojiList', emojiJson);
     this.set('emojiJsonToExport', []);
     this.initCategory();
-    console.log('JMT REference to component =>', this);
+    console.log('JMT Reference to component =>', this);
+    console.log('JMT Reference to emojiJson', emojiJson);
   },
 
   initCategory() {

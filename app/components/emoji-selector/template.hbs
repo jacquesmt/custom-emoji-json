@@ -1,29 +1,32 @@
 <div class="emoji-list-views">
   <div class="emoji-list-wrapper">
+    {{input class="emoji-search" type="text" value=textSearch placeholder="Filter Search"}}
     <div class="emoji-list">
-        {{#each emojiList as |emoji|}}
-          <div class="emoji-items">
-            <div class="emoji-item emoji-char"> <span>{{emoji.char}}</span></div>
-            <div class="emoji-item emoji-description">
-              <div class="emoji-description-name"> {{emoji.name}} </div>
-              <div class="emoji-description-code"> {{emoji.code}} </div>
-              <div class="emoji-description-no"> {{emoji.no}} </div>
-            </div>
+        {{#each filteredSearch as |emoji index|}}
+          {{#if (and (gte index startIndex) (lte index endIndex))}}
+            <div class="emoji-items">
+              <div class="emoji-item emoji-char"> <span>{{emoji.char}}</span></div>
+              <div class="emoji-item emoji-description">
+                <div class="emoji-description-name"> {{emoji.name}} </div>
+                <div class="emoji-description-code"> {{emoji.code}} </div>
+                <div class="emoji-description-no"> {{emoji.no}} </div>
+              </div>
 
-            <div class="emoji-item emoji-category">
-              <div class="category-item"> {{radio-button checked=emoji.category value='people'}}People</div>
-              <div class="category-item"> {{radio-button checked=emoji.category value='nature'}}Nature</div>
-              <div class="category-item"> {{radio-button checked=emoji.category value='objects'}}Objects</div>
-              <div class="category-item"> {{radio-button checked=emoji.category value='places'}}Places</div>
-              <div class="category-item"> {{radio-button checked=emoji.category value='symbols'}}Symbols</div>
-              <div class="category-item"> {{radio-button checked=emoji.category }}none</div>
+              <div class="emoji-item emoji-category">
+                <div class="category-item"> {{radio-button checked=emoji.category value='people'}}People</div>
+                <div class="category-item"> {{radio-button checked=emoji.category value='nature'}}Nature</div>
+                <div class="category-item"> {{radio-button checked=emoji.category value='objects'}}Objects</div>
+                <div class="category-item"> {{radio-button checked=emoji.category value='places'}}Places</div>
+                <div class="category-item"> {{radio-button checked=emoji.category value='symbols'}}Symbols</div>
+                <div class="category-item"> {{radio-button checked=emoji.category }}none</div>
+              </div>
             </div>
-          </div>
+          {{/if}}
         {{/each}}
     </div>
     <div class="emoji-export">
       <a class="emoji-export-btn" {{action "generateJson"}}>
-        <span class="button-label" > Download new Emoji Json </span>
+        <span class="button-label" > Download New Emoji Json </span>
       </a>
     </div>
   </div>
