@@ -3,7 +3,7 @@
     {{input class="emoji-search" type="text" value=textSearch placeholder="Filter Search"}}
     <div class="emoji-list">
         {{#each filteredSearch as |emoji index|}}
-          {{#if (and (gte index startIndex) (lte index endIndex))}}
+          {{!-- {{#if (and (gte index startIndex) (lte index endIndex))}} --}}
             <div class="emoji-items">
               <div class="emoji-item emoji-char"> <span>{{emoji.char}}</span></div>
               <div class="emoji-item emoji-description">
@@ -21,9 +21,23 @@
                 <div class="category-item"> {{radio-button checked=emoji.category }}none</div>
               </div>
             </div>
-          {{/if}}
+          {{!-- {{/if}} --}}
         {{/each}}
     </div>
+    <div class="emoji-pagination">
+      {{#each numberOfPages as |page index|}}
+          {{#if (eq (add index 1) 1)}}
+            <span class="emoji-page-number" {{action 'handlePageChange' 'prev'}}> &lt;&lt;</span>
+            <span class="emoji-page-number {{if (eq (add index 1) currentPage) 'selected-page'}}" {{action 'handlePageChange' (add index 1)}}>{{add index 1}}</span>
+          {{else if (lt (add index 1) numberOfPages.length)}}
+            <span class="emoji-page-number {{if (eq (add index 1) currentPage) 'selected-page'}}" {{action 'handlePageChange' (add index 1)}}>{{add index 1}}</span>
+          {{else if (eq (add index 1) numberOfPages.length)}}
+            <span class="emoji-page-number {{if (eq (add index 1) currentPage) 'selected-page'}}" {{action 'handlePageChange' (add index 1)}}>{{add index 1}}</span>
+            <span class="emoji-page-number" {{action 'handlePageChange' 'next'}}> &gt;&gt;</span>
+          {{/if}}
+      {{/each}}
+    </div>
+
     <div class="emoji-export">
       <a class="emoji-export-btn" {{action "generateJson"}}>
         <span class="button-label" > Download New Emoji Json </span>
@@ -32,7 +46,7 @@
   </div>
 
   <div class="emoji-category-list">
-    <p class="total-count-label"> {{totalCount}} selected emoji(s).</p>
+    <p class="total-count-label"> {{totalSelectedCount}} selected emoji(s).</p>
     <div class="emoji-category-list-item people">
       <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" "people"}}>People ({{peopleList.length}})</a>
       {{emoji-listing showList=showPeopleList emojiList=peopleList}}

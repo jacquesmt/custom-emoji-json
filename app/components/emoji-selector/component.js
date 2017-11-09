@@ -4,6 +4,7 @@ import FileSaverMixin from 'ember-cli-file-saver/mixins/file-saver';
 
 const {
   computed,
+  observer
 } = Ember;
 
 export default Ember.Component.extend(FileSaverMixin, {
@@ -18,9 +19,14 @@ export default Ember.Component.extend(FileSaverMixin, {
   showSymbolsList: false,
   emojiJsonToExport: null,
   textSearch: null,
+  fileName: 'emoji-generated.json',
+  contentType: "text/plain; charset=utf-8",
 
   startIndex: 0,
-  endIndex: emojiJson.length,
+  totalEmojiCount: emojiJson.length,
+
+  pageSize: 500,
+  currentPage:1,
 
   actions: {
     toggleList(list) {
@@ -44,6 +50,33 @@ export default Ember.Component.extend(FileSaverMixin, {
     },
     generateJson() {
       this.generateJson();
+    },
+
+    handlePageChange(page) {
+      let newPage;
+
+      if (page === 'prev') {
+        newPage = this.get('currentPage') - 1;
+        if (newPage > 0) {
+          this.set('currentPage', newPage);
+        } else {
+          this.set('currentPage', 1);
+        }
+      } else if (page === 'next') {
+        newPage = this.get('currentPage') + 1;
+        if (newPage < this.get('numberOfPages.length')) {
+          this.set('currentPage', newPage);
+        } else {
+          this.set('currentPage', this.get('numberOfPages.length'));
+        }
+      } else {
+        this.set('currentPage', page);
+      }
+
+      this.setStartIndex();
+
+      console.log('Current page is', page);
+      console.log('Start index is ', this.get('startIndex'));
     }
   },
 
@@ -52,8 +85,12 @@ export default Ember.Component.extend(FileSaverMixin, {
   objectsList: computed.filterBy('emojiList', 'category', 'objects'),
   placesList: computed.filterBy('emojiList', 'category', 'places'),
   symbolsList: computed.filterBy('emojiList', 'category', 'symbols'),
-  fileName: 'emoji-generated.json',
-  contentType: "text/plain; charset=utf-8",
+
+  numberOfPages: computed('pageSize', function() {
+    const totalCount = emojiJson.length;
+    const pageSize = this.get('pageSize');
+    return new Array(Math.ceil(totalCount/pageSize));
+  }),
 
   generateJson() {
     const jsonToExport = {};
@@ -96,7 +133,7 @@ export default Ember.Component.extend(FileSaverMixin, {
     this.saveFileAs(this.get('fileName'), content, this.get('contentType'));
   },
 
-  totalCount: computed('peopleList.length', 'natureList.length', 'objectsList.length', 'placesList.length', 'symbolsList.length', function () {
+  totalSelectedCount: computed('peopleList.length', 'natureList.length', 'objectsList.length', 'placesList.length', 'symbolsList.length', function () {
     return this.get('peopleList.length') + this.get('natureList.length') + this.get('objectsList.length') + this.get('placesList.length') + this.get('symbolsList.length');
   }),
 
@@ -112,22 +149,32 @@ export default Ember.Component.extend(FileSaverMixin, {
 
   emptySearchResult: computed.equal('filteredSearch.length', 0),
 
+  setEmojiList: observer('startIndex', function () {
+    const endPosition = this.get('currentPage') * this.get('pageSize');
+    this.set('emojiList', _.slice(emojiJson, this.get('startIndex') - 1, endPosition));
+  }).on('init'),
+
   init() {
     this._super(...arguments);
-    this.set('emojiList', _.slice(emojiJson, 1, 500));
-    // this.set('emojiList', emojiJson);
     this.set('emojiJsonToExport', []);
     this.initCategory();
+    this.setStartIndex();
     console.log('JMT Reference to component =>', this);
     console.log('JMT Reference to emojiJson', emojiJson);
   },
 
   initCategory() {
-    this.get('emojiList').forEach(emojiItem => {
+    emojiJson.forEach(emojiItem => {
       if (!Ember.get(emojiItem, 'category')) {
         Ember.set(emojiItem, 'category', 'null');
       }
     });
   },
+
+  setStartIndex() {
+    const currentPage = this.get('currentPage');
+    const pageSize = this.get('pageSize');
+    this.set('startIndex', 1 + (pageSize * (currentPage-1)));
+  }
 
 });
