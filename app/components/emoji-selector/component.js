@@ -53,8 +53,8 @@ export default Ember.Component.extend(FileSaverMixin, {
     },
 
     handlePageChange(page) {
+      this.performCategoryListBackup();
       let newPage;
-
       if (page === 'prev') {
         newPage = this.get('currentPage') - 1;
         if (newPage > 0) {
@@ -80,11 +80,45 @@ export default Ember.Component.extend(FileSaverMixin, {
     }
   },
 
-  peopleList: computed.filterBy('emojiList', 'category', 'people'),
-  natureList: computed.filterBy('emojiList', 'category', 'nature'),
-  objectsList: computed.filterBy('emojiList', 'category', 'objects'),
-  placesList: computed.filterBy('emojiList', 'category', 'places'),
-  symbolsList: computed.filterBy('emojiList', 'category', 'symbols'),
+  peopleList: computed('emojiList.@each.category', function () {
+    const fromMainList =  _.filter(this.get('emojiList'), emoji => emoji.category === 'people');
+    const fromBackup = this.get('peopleListBackup');
+
+    return _.uniq([].concat(fromBackup, fromMainList));
+  }),
+  peopleListBackup: null,
+
+  natureList: computed('emojiList.@each.category', function () {
+    const fromMainList =  _.filter(this.get('emojiList'), emoji => emoji.category === 'nature');
+    const fromBackup = this.get('natureListBackup');
+
+    return _.uniq([].concat(fromBackup, fromMainList));
+  }),
+  natureListBackup: null,
+
+  objectsList: computed('emojiList.@each.category', function () {
+    const fromMainList =  _.filter(this.get('emojiList'), emoji => emoji.category === 'objects');
+    const fromBackup = this.get('objectsListBackup');
+
+    return _.uniq([].concat(fromBackup, fromMainList));
+  }),
+  objectsListBackup: null,
+
+  placesList: computed('emojiList.@each.category', function () {
+    const fromMainList =  _.filter(this.get('emojiList'), emoji => emoji.category === 'places');
+    const fromBackup = this.get('placesListBackup');
+
+    return _.uniq([].concat(fromBackup, fromMainList));
+  }),
+  placesListBackup: null,
+
+  symbolsList: computed('emojiList.@each.category', function () {
+    const fromMainList =  _.filter(this.get('emojiList'), emoji => emoji.category === 'symbols');
+    const fromBackup = this.get('symbolsListBackup');
+
+    return _.uniq([].concat(fromBackup, fromMainList));
+  }),
+  symbolsListBackup: null,
 
   numberOfPages: computed('pageSize', function() {
     const totalCount = emojiJson.length;
@@ -95,35 +129,11 @@ export default Ember.Component.extend(FileSaverMixin, {
   generateJson() {
     const jsonToExport = {};
 
-    jsonToExport.people = _.map(this.get('emojiList').filter((item) => {
-      if (Ember.get(item, 'category') === 'people') {
-        return Ember.get(item, 'char');
-      }
-    }), 'char');
-
-    jsonToExport.nature = _.map(this.get('emojiList').filter((item) => {
-      if (Ember.get(item, 'category') === 'nature') {
-        return Ember.get(item, 'char');
-      }
-    }), 'char');
-
-    jsonToExport.objects = _.map(this.get('emojiList').filter((item) => {
-      if (Ember.get(item, 'category') === 'objects') {
-        return Ember.get(item, 'char');
-      }
-    }), 'char');
-
-    jsonToExport.places = _.map(this.get('emojiList').filter((item) => {
-      if (Ember.get(item, 'category') === 'places') {
-        return Ember.get(item, 'char');
-      }
-    }), 'char');
-
-    jsonToExport.symbols = _.map(this.get('emojiList').filter((item) => {
-      if (Ember.get(item, 'category') === 'symbols') {
-        return Ember.get(item, 'char');
-      }
-    }), 'char');
+    jsonToExport.people = _.map(this.get('peopleList'), item => item.char);
+    jsonToExport.nature = _.map(this.get('natureList'), item => item.char);
+    jsonToExport.objects = _.map(this.get('objectsList'), item => item.char);
+    jsonToExport.places = _.map(this.get('placesList'), item => item.char);
+    jsonToExport.symbols = _.map(this.get('symbolsList'), item => item.char);
 
     this.set('emojiJsonToExport', jsonToExport);
 
@@ -157,6 +167,12 @@ export default Ember.Component.extend(FileSaverMixin, {
   init() {
     this._super(...arguments);
     this.set('emojiJsonToExport', []);
+    this.set('peopleListBackup', []);
+    this.set('natureListBackup', []);
+    this.set('objectsListBackup', []);
+    this.set('placesListBackup', []);
+    this.set('symbolsListBackup', []);
+
     this.initCategory();
     this.setStartIndex();
     console.log('JMT Reference to component =>', this);
@@ -175,6 +191,14 @@ export default Ember.Component.extend(FileSaverMixin, {
     const currentPage = this.get('currentPage');
     const pageSize = this.get('pageSize');
     this.set('startIndex', 1 + (pageSize * (currentPage-1)));
+  },
+
+  performCategoryListBackup() {
+    this.set('peopleListBackup', this.get('peopleList'));
+    this.set('natureListBackup', this.get('natureList'));
+    this.set('objectsListBackup', this.get('objectsList'));
+    this.set('placesListBackup', this.get('placesList'));
+    this.set('symbolsListBackup', this.get('symbolsList'));
   }
 
 });
