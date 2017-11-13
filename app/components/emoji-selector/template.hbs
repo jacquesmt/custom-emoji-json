@@ -24,20 +24,21 @@
           {{!-- {{/if}} --}}
         {{/each}}
     </div>
-    <div class="emoji-pagination">
-      {{#each numberOfPages as |page index|}}
-          {{#if (eq (add index 1) 1)}}
-            <span class="emoji-page-number" {{action 'handlePageChange' 'prev'}}> &lt;&lt;</span>
-            <span class="emoji-page-number {{if (eq (add index 1) currentPage) 'selected-page'}}" {{action 'handlePageChange' (add index 1)}}>{{add index 1}}</span>
-          {{else if (lt (add index 1) numberOfPages.length)}}
-            <span class="emoji-page-number {{if (eq (add index 1) currentPage) 'selected-page'}}" {{action 'handlePageChange' (add index 1)}}>{{add index 1}}</span>
-          {{else if (eq (add index 1) numberOfPages.length)}}
-            <span class="emoji-page-number {{if (eq (add index 1) currentPage) 'selected-page'}}" {{action 'handlePageChange' (add index 1)}}>{{add index 1}}</span>
-            <span class="emoji-page-number" {{action 'handlePageChange' 'next'}}> &gt;&gt;</span>
-          {{/if}}
-      {{/each}}
-    </div>
-
+    {{#if (gt numberOfPages.length 1)}}
+      <div class="emoji-pagination">
+        {{#each numberOfPages as |page index|}}
+            {{#if (eq (add index 1) 1)}}
+              <span class="emoji-page-number" {{action 'handlePageChange' 'prev'}}> &lt;&lt;</span>
+              <span class="emoji-page-number {{if (eq (add index 1) currentPage) 'selected-page'}}" {{action 'handlePageChange' (add index 1)}}>{{add index 1}}</span>
+            {{else if (lt (add index 1) numberOfPages.length)}}
+              <span class="emoji-page-number {{if (eq (add index 1) currentPage) 'selected-page'}}" {{action 'handlePageChange' (add index 1)}}>{{add index 1}}</span>
+            {{else if (eq (add index 1) numberOfPages.length)}}
+              <span class="emoji-page-number {{if (eq (add index 1) currentPage) 'selected-page'}}" {{action 'handlePageChange' (add index 1)}}>{{add index 1}}</span>
+              <span class="emoji-page-number" {{action 'handlePageChange' 'next'}}> &gt;&gt;</span>
+            {{/if}}
+        {{/each}}
+      </div>
+    {{/if}}
     <div class="emoji-export">
       <a class="emoji-export-btn" {{action "generateJson"}}>
         <span class="button-label" > Download New Emoji Json </span>

@@ -1,15 +1,19 @@
+/* global _, $ */
 import Ember from 'ember';
 import emojiJson from '../../utils/emojiJson';
 import FileSaverMixin from 'ember-cli-file-saver/mixins/file-saver';
 
 const {
   computed,
+  inject,
   observer
 } = Ember;
 
 export default Ember.Component.extend(FileSaverMixin, {
   classNameBindings: ['emptySearchResult'],
   classNames: ['emoji-selector'],
+  globalServices: inject.service(),
+
   emojiList: null,
 
   showPeopleList: false,
