@@ -20,6 +20,7 @@ export default Ember.Component.extend({
         console.log(file.name, file.type, file.data, file.size);
         // There is also file.filename for backward compatibility
         this.set('fileContent', file.data);
+        this.set('globalServices.sourceName', file.name);
         this.set('globalServices.importedJson', JSON.parse(file.data));
     },
     editEmojy: function () {

@@ -4,6 +4,7 @@ import Ember from 'ember';
 export default Ember.Service.extend({
   importedJson: null,
   importedJsonConverted: null,
+  sourceName: null,
   setImportedJsonConverted: Ember.observer('importedJson.jsonToImport', function () {
     const result =  [].concat(this.get('importedJson.jsonToImport.people')|| [],
                      this.get('importedJson.jsonToImport.nature') || [],

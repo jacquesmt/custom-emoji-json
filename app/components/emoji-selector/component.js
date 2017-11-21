@@ -28,7 +28,9 @@ export default Ember.Component.extend(FileSaverMixin, {
   emojiJson: null,
 
   startIndex: 0,
-  totalEmojiCount: computed.reads('emojiJson.length'),
+  totalEmojiCount: computed(function (){
+    return emojiJsonImported.length;
+  }),
 
   pageSize: 500,
   currentPage:1,
@@ -85,6 +87,14 @@ export default Ember.Component.extend(FileSaverMixin, {
       console.log('Start index is ', this.get('startIndex'));
     }
   },
+
+  sourceName: computed('globalServices.sourceName', function () {
+    if (this.get('globalServices.sourceName')) {
+      return this.get('globalServices.sourceName');
+    } else {
+      return 'Emoji List V5';
+    }
+  }),
 
   peopleList: computed('emojiList.@each.category', function () {
     const fromMainList =  _.filter(this.get('emojiList'), emoji => emoji.category === 'people');
