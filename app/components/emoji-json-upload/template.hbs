@@ -1,0 +1,17 @@
+{{#file-picker fileLoaded="fileLoaded" readAs="readAsText"}}
+    Drag here or click to upload a file
+{{/file-picker}}
+
+{{globalServices.globaljson}}
+
+{{#if fileContent}}
+  <div class="file-loaded">
+    {{fileContent}}
+  </div>
+
+  <div class="emoji-edit-import">
+    <a class="emoji-edit-import-btn" {{action "editEmojy"}}>
+      <span class="button-label" > Edit imported emoji </span>
+    </a>
+  </div>
+{{/if}}

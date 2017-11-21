@@ -1,6 +1,6 @@
 /* global _, $ */
 import Ember from 'ember';
-import emojiJson from '../../utils/emojiJson';
+import emojiJsonImported from '../../utils/emojiJson';
 import FileSaverMixin from 'ember-cli-file-saver/mixins/file-saver';
 
 const {
@@ -12,7 +12,7 @@ const {
 export default Ember.Component.extend(FileSaverMixin, {
   classNameBindings: ['emptySearchResult'],
   classNames: ['emoji-selector'],
-  globalServices: inject.service(),
+  globalServices: inject.service('global-services'),
 
   emojiList: null,
 
@@ -25,9 +25,10 @@ export default Ember.Component.extend(FileSaverMixin, {
   textSearch: null,
   fileName: 'emoji-generated.json',
   contentType: "text/plain; charset=utf-8",
+  emojiJson: null,
 
   startIndex: 0,
-  totalEmojiCount: emojiJson.length,
+  totalEmojiCount: computed.reads('emojiJson.length'),
 
   pageSize: 500,
   currentPage:1,
@@ -125,14 +126,15 @@ export default Ember.Component.extend(FileSaverMixin, {
   }),
   symbolsListBackup: null,
 
-  numberOfPages: computed('pageSize', function() {
-    const totalCount = emojiJson.length;
+  numberOfPages: computed('pageSize', 'emojiJson.length', function() {
+    const totalCount = this.get('emojiJson.length') || 0;
     const pageSize = this.get('pageSize');
     return new Array(Math.ceil(totalCount/pageSize));
   }),
 
   generateJson() {
     const jsonToExport = {};
+    const jsonToImport = {};
 
     jsonToExport.people = _.map(this.get('peopleList'), item => item.char);
     jsonToExport.nature = _.map(this.get('natureList'), item => item.char);
@@ -140,7 +142,13 @@ export default Ember.Component.extend(FileSaverMixin, {
     jsonToExport.places = _.map(this.get('placesList'), item => item.char);
     jsonToExport.symbols = _.map(this.get('symbolsList'), item => item.char);
 
-    this.set('emojiJsonToExport', jsonToExport);
+    jsonToImport.people = this.get('peopleList');
+    jsonToImport.nature = this.get('natureList');
+    jsonToImport.objects = this.get('objectsList');
+    jsonToImport.places = this.get('places');
+    jsonToImport.symbols = this.get('symbolsList');
+
+    this.set('emojiJsonToExport', {jsonToExport, jsonToImport});
 
     console.log('Exporting emoji JSON', this.get('emojiJsonToExport'));
 
@@ -168,13 +176,22 @@ export default Ember.Component.extend(FileSaverMixin, {
 
   emptySearchResult: computed.equal('filteredSearch.length', 0),
 
-  setEmojiList: observer('startIndex', function () {
+  setEmojiList: observer('startIndex', 'emojiJson', function () {
     const endPosition = this.get('currentPage') * this.get('pageSize');
-    this.set('emojiList', _.slice(emojiJson, this.get('startIndex') - 1, endPosition));
+    this.set('emojiList', _.slice(this.get('emojiJson'), this.get('startIndex') - 1, endPosition));
   }).on('init'),
 
   init() {
     this._super(...arguments);
+    if (this.get('globalServices.hasImportedJson')) {
+      const newArray = [].concat(this.get('globalServices.importedJsonConverted'), emojiJsonImported);
+      const uniqArray =  _.uniqBy(newArray, (item) => item.no );
+      const sortedArray = _.sortBy(uniqArray, (item) =>  item.no);
+      this.set('emojiJson', sortedArray);
+    } else {
+      this.set('emojiJson', emojiJsonImported);
+    }
+
     this.set('emojiJsonToExport', []);
     this.set('peopleListBackup', []);
     this.set('natureListBackup', []);
@@ -184,16 +201,18 @@ export default Ember.Component.extend(FileSaverMixin, {
 
     this.initCategory();
     this.setStartIndex();
-    console.log('JMT Reference to component =>', this);
-    console.log('JMT Reference to emojiJson', emojiJson);
+    console.log('JMT - Reference to component =>', this);
+    console.log('JMT - Reference to emojiJson', this.get('emojiJson'));
   },
 
   initCategory() {
-    emojiJson.forEach(emojiItem => {
-      if (!Ember.get(emojiItem, 'category')) {
-        Ember.set(emojiItem, 'category', 'null');
-      }
-    });
+    if (this.get('emojiJson')) {
+      this.get('emojiJson').forEach(emojiItem => {
+        if (!Ember.get(emojiItem, 'category')) {
+          Ember.set(emojiItem, 'category', 'null');
+        }
+      });
+    }
   },
 
   setStartIndex() {

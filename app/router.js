@@ -8,6 +8,8 @@ const Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route('main');
+  this.route('upload');
+  this.route('upload-json');
 });
 
 export default Router;
