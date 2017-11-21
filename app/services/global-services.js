@@ -6,10 +6,10 @@ export default Ember.Service.extend({
   importedJsonConverted: null,
   setImportedJsonConverted: Ember.observer('importedJson.jsonToImport', function () {
     const result =  [].concat(this.get('importedJson.jsonToImport.people')|| [],
-                     this.get('importedJson.jsonToImport.nature')|| [],
-                     this.get('importedJson.jsonToImport.objects')|| [],
-                     this.get('importedJson.jsonToImport.places')|| [],
-                     this.get('importedJson.jsonToImport.symbols')|| []);
+                     this.get('importedJson.jsonToImport.nature') || [],
+                     this.get('importedJson.jsonToImport.objects') || [],
+                     this.get('importedJson.jsonToImport.places') || [],
+                     this.get('importedJson.jsonToImport.symbols') || []);
     this.set('importedJsonConverted', result);
     console.log('Reference from Service - setting importedJsonConverted', result);
   }).on('init'),

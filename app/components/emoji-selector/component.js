@@ -145,7 +145,7 @@ export default Ember.Component.extend(FileSaverMixin, {
     jsonToImport.people = this.get('peopleList');
     jsonToImport.nature = this.get('natureList');
     jsonToImport.objects = this.get('objectsList');
-    jsonToImport.places = this.get('places');
+    jsonToImport.places = this.get('placesList');
     jsonToImport.symbols = this.get('symbolsList');
 
     this.set('emojiJsonToExport', {jsonToExport, jsonToImport});
@@ -183,14 +183,6 @@ export default Ember.Component.extend(FileSaverMixin, {
 
   init() {
     this._super(...arguments);
-    if (this.get('globalServices.hasImportedJson')) {
-      const newArray = [].concat(this.get('globalServices.importedJsonConverted'), emojiJsonImported);
-      const uniqArray =  _.uniqBy(newArray, (item) => item.no );
-      const sortedArray = _.sortBy(uniqArray, (item) =>  item.no);
-      this.set('emojiJson', sortedArray);
-    } else {
-      this.set('emojiJson', emojiJsonImported);
-    }
 
     this.set('emojiJsonToExport', []);
     this.set('peopleListBackup', []);
@@ -198,6 +190,19 @@ export default Ember.Component.extend(FileSaverMixin, {
     this.set('objectsListBackup', []);
     this.set('placesListBackup', []);
     this.set('symbolsListBackup', []);
+
+    if (this.get('globalServices.hasImportedJson')) {
+      const removedImportedArray = _.reject(emojiJsonImported, (item) => {
+        return !!_.find(this.get('globalServices.importedJsonConverted'), {no: item.no});
+      })
+      const newArray = [].concat(this.get('globalServices.importedJsonConverted'), removedImportedArray);
+      // const uniqArray =  _.uniqBy(newArray, (item) => item.no );
+      const sortedArray = _.sortBy(newArray, (item) =>  item.no);
+      this.performCategoryListBackupFromImported();
+      this.set('emojiJson', sortedArray);
+    } else {
+      this.set('emojiJson', emojiJsonImported);
+    }
 
     this.initCategory();
     this.setStartIndex();
@@ -219,6 +224,14 @@ export default Ember.Component.extend(FileSaverMixin, {
     const currentPage = this.get('currentPage');
     const pageSize = this.get('pageSize');
     this.set('startIndex', 1 + (pageSize * (currentPage-1)));
+  },
+
+  performCategoryListBackupFromImported() {
+    this.set('peopleListBackup', this.get('globalServices.importedJson.jsonToImport.people'));
+    this.set('natureListBackup', this.get('globalServices.importedJson.jsonToImport.nature'));
+    this.set('objectsListBackup', this.get('globalServices.importedJson.jsonToImport.objects'));
+    this.set('placesListBackup', this.get('globalServices.importedJson.jsonToImport.places'));
+    this.set('symbolsListBackup', this.get('globalServices.importedJson.jsonToImport.symbols'));
   },
 
   performCategoryListBackup() {
