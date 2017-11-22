@@ -1,7 +1,9 @@
 # custom-emoji-json
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+custom-emoji-json is a web UI that allows you to select emojis and categorize them for the purpose of dowloading as a json.
+It allows you to later import your json for further editing.
+
+![Alt text](/customEmojiPic.png?raw=true "Screen Shot")
 
 ## Prerequisites
 
@@ -25,25 +27,12 @@ You will need the following things properly installed on your computer.
 * `ember serve`
 * Visit your app at [http://localhost:4200](http://localhost:4200).
 
-### Code Generators
-
-Make use of the many generators for code, try `ember help generate` for more details
-
-### Running Tests
-
-* `ember test`
-* `ember test --server`
-
 ### Building
 
 * `ember build` (development)
 * `ember build --environment production` (production)
 
 * `npm run start` to run on local server
-
-### Deploying
-
-Specify what it takes to deploy your app.
 
 ## Further Reading / Useful Links
 
