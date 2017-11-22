@@ -1,6 +1,6 @@
 /* global _, $ */
 import Ember from 'ember';
-import emojiJsonImported from '../../utils/emojiJson';
+import emojiJsonMain from '../../utils/emojiJson';
 import FileSaverMixin from 'ember-cli-file-saver/mixins/file-saver';
 
 const {
@@ -29,7 +29,7 @@ export default Ember.Component.extend(FileSaverMixin, {
 
   startIndex: 0,
   totalEmojiCount: computed(function (){
-    return emojiJsonImported.length;
+    return emojiJsonMain.length;
   }),
 
   pageSize: 500,
@@ -96,41 +96,40 @@ export default Ember.Component.extend(FileSaverMixin, {
     }
   }),
 
-  peopleList: computed('emojiList.@each.category', function () {
+  peopleList: computed('emojiList.@each.category','peopleListBackup.@each.category', function () {
     const fromMainList =  _.filter(this.get('emojiList'), emoji => emoji.category === 'people');
-    const fromBackup = this.get('peopleListBackup');
-
+    const fromBackup =  _.filter(this.get('peopleListBackup'), emoji => emoji.category === 'people');
     return _.uniq([].concat(fromBackup, fromMainList));
   }),
   peopleListBackup: null,
 
-  natureList: computed('emojiList.@each.category', function () {
+  natureList: computed('emojiList.@each.category', 'natureListBackup.@each.category', function () {
     const fromMainList =  _.filter(this.get('emojiList'), emoji => emoji.category === 'nature');
-    const fromBackup = this.get('natureListBackup');
+    const fromBackup =  _.filter(this.get('natureListBackup'), emoji => emoji.category === 'nature');
 
     return _.uniq([].concat(fromBackup, fromMainList));
   }),
   natureListBackup: null,
 
-  objectsList: computed('emojiList.@each.category', function () {
+  objectsList: computed('emojiList.@each.category', 'objectsListBackup.@each.category', function () {
     const fromMainList =  _.filter(this.get('emojiList'), emoji => emoji.category === 'objects');
-    const fromBackup = this.get('objectsListBackup');
+    const fromBackup =  _.filter(this.get('objectsListBackup'), emoji => emoji.category === 'objects');
 
     return _.uniq([].concat(fromBackup, fromMainList));
   }),
   objectsListBackup: null,
 
-  placesList: computed('emojiList.@each.category', function () {
+  placesList: computed('emojiList.@each.category', 'placesListBackup.@each.category', function () {
     const fromMainList =  _.filter(this.get('emojiList'), emoji => emoji.category === 'places');
-    const fromBackup = this.get('placesListBackup');
+    const fromBackup =  _.filter(this.get('placesListBackup'), emoji => emoji.category === 'places');
 
     return _.uniq([].concat(fromBackup, fromMainList));
   }),
   placesListBackup: null,
 
-  symbolsList: computed('emojiList.@each.category', function () {
+  symbolsList: computed('emojiList.@each.category', 'symbolsListBackup.[]', function () {
     const fromMainList =  _.filter(this.get('emojiList'), emoji => emoji.category === 'symbols');
-    const fromBackup = this.get('symbolsListBackup');
+    const fromBackup =  _.filter(this.get('symbolsListBackup'), emoji => emoji.category === 'symbols');
 
     return _.uniq([].concat(fromBackup, fromMainList));
   }),
@@ -191,6 +190,36 @@ export default Ember.Component.extend(FileSaverMixin, {
     this.set('emojiList', _.slice(this.get('emojiJson'), this.get('startIndex') - 1, endPosition));
   }).on('init'),
 
+  syncFromImported() {
+    const imported = this.get('globalServices.importedJsonConverted');
+    _.forEach(imported, (emoji) => {
+      const itemToUpdate = _.find(this.get('emojiJson'), {no: emoji.no});
+      if (itemToUpdate) {
+        const category = Ember.get(emoji,'category');
+        Ember.set(itemToUpdate, 'category', category);
+        switch (category) {
+          case 'people':
+              this.get('peopleListBackup').pushObject(itemToUpdate);
+              return;
+          case 'nature':
+              this.get('natureListBackup').pushObject(itemToUpdate);
+              return;
+          case 'places':
+              this.get('placesListBackup').pushObject(itemToUpdate);
+              return;
+          case 'objects':
+              this.get('objectsListBackup').pushObject(itemToUpdate);
+              return;
+          case 'symbols':
+              this.get('symbolsListBackup').pushObject(itemToUpdate);
+              return;
+          default:
+              return;
+        }
+      }
+    });
+  },
+
   init() {
     this._super(...arguments);
 
@@ -200,18 +229,14 @@ export default Ember.Component.extend(FileSaverMixin, {
     this.set('objectsListBackup', []);
     this.set('placesListBackup', []);
     this.set('symbolsListBackup', []);
+    this.set('emojiJson', []);
+    this.set('emojiList', []);
 
     if (this.get('globalServices.hasImportedJson')) {
-      const removedImportedArray = _.reject(emojiJsonImported, (item) => {
-        return !!_.find(this.get('globalServices.importedJsonConverted'), {no: item.no});
-      })
-      const newArray = [].concat(this.get('globalServices.importedJsonConverted'), removedImportedArray);
-      // const uniqArray =  _.uniqBy(newArray, (item) => item.no );
-      const sortedArray = _.sortBy(newArray, (item) =>  item.no);
-      this.performCategoryListBackupFromImported();
-      this.set('emojiJson', sortedArray);
+      this.set('emojiJson', emojiJsonMain);
+      this.syncFromImported();
     } else {
-      this.set('emojiJson', emojiJsonImported);
+      this.set('emojiJson', emojiJsonMain);
     }
 
     this.initCategory();
@@ -234,14 +259,6 @@ export default Ember.Component.extend(FileSaverMixin, {
     const currentPage = this.get('currentPage');
     const pageSize = this.get('pageSize');
     this.set('startIndex', 1 + (pageSize * (currentPage-1)));
-  },
-
-  performCategoryListBackupFromImported() {
-    this.set('peopleListBackup', this.get('globalServices.importedJson.jsonToImport.people'));
-    this.set('natureListBackup', this.get('globalServices.importedJson.jsonToImport.nature'));
-    this.set('objectsListBackup', this.get('globalServices.importedJson.jsonToImport.objects'));
-    this.set('placesListBackup', this.get('globalServices.importedJson.jsonToImport.places'));
-    this.set('symbolsListBackup', this.get('globalServices.importedJson.jsonToImport.symbols'));
   },
 
   performCategoryListBackup() {
