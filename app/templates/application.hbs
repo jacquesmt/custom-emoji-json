@@ -1,9 +1,9 @@
+{{#if application.waitTimerOn}}
+  <div class="wait-message"> ⏳  Please Wait... </div>
+{{/if}}
 <h1> Custom Emoji List Generator </h1>
 <ul>
  <li> {{#link-to "main"}} Get started with Emoji 5.0 {{/link-to}}</li>
  <li> {{#link-to "upload"}} Upload emoji json {{/link-to}} </li>
- {{#if globalServices.importedJson}}
-   <li> {{#link-to "upload"}} Use imported JSON:{{/link-to}}</li>
- {{/if}}
 </ul>
 {{outlet}}

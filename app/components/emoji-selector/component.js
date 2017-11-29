@@ -12,7 +12,7 @@ const {
 export default Ember.Component.extend(FileSaverMixin, {
   classNameBindings: ['emptySearchResult'],
   classNames: ['emoji-selector'],
-  globalServices: inject.service('global-services'),
+  application: inject.service(),
 
   emojiList: null,
 
@@ -60,37 +60,40 @@ export default Ember.Component.extend(FileSaverMixin, {
     },
 
     handlePageChange(page) {
-      this.performCategoryListBackup();
-      let newPage;
-      if (page === 'prev') {
-        newPage = this.get('currentPage') - 1;
-        if (newPage > 0) {
-          this.set('currentPage', newPage);
+      this.set('application.waitTimerOn', true);
+      Ember.run.next(this, function () {
+        this.performCategoryListBackup();
+        let newPage;
+        if (page === 'prev') {
+          newPage = this.get('currentPage') - 1;
+          if (newPage > 0) {
+            this.set('currentPage', newPage);
+          } else {
+            this.set('currentPage', 1);
+          }
+        } else if (page === 'next') {
+          newPage = this.get('currentPage') + 1;
+          if (newPage < this.get('numberOfPages.length')) {
+            this.set('currentPage', newPage);
+          } else {
+            this.set('currentPage', this.get('numberOfPages.length'));
+          }
         } else {
-          this.set('currentPage', 1);
+          this.set('currentPage', page);
         }
-      } else if (page === 'next') {
-        newPage = this.get('currentPage') + 1;
-        if (newPage < this.get('numberOfPages.length')) {
-          this.set('currentPage', newPage);
-        } else {
-          this.set('currentPage', this.get('numberOfPages.length'));
-        }
-      } else {
-        this.set('currentPage', page);
-      }
 
-      this.setStartIndex();
-      $('.emoji-list').scrollTop(0);
+        this.setStartIndex();
+        $('.emoji-list').scrollTop(0);
 
-      console.log('Current page is', page);
-      console.log('Start index is ', this.get('startIndex'));
+        console.log('Current page is', page);
+        console.log('Start index is ', this.get('startIndex'));
+      });
     }
   },
 
-  sourceName: computed('globalServices.sourceName', function () {
-    if (this.get('globalServices.sourceName')) {
-      return this.get('globalServices.sourceName');
+  sourceName: computed('application.sourceName', function () {
+    if (this.get('application.sourceName')) {
+      return this.get('application.sourceName');
     } else {
       return 'Emoji List V5';
     }
@@ -191,7 +194,7 @@ export default Ember.Component.extend(FileSaverMixin, {
   }).on('init'),
 
   syncFromImported() {
-    const imported = this.get('globalServices.importedJsonConverted');
+    const imported = this.get('application.importedJsonConverted');
     _.forEach(imported, (emoji) => {
       const itemToUpdate = _.find(this.get('emojiJson'), {no: emoji.no});
       if (itemToUpdate) {
@@ -223,6 +226,12 @@ export default Ember.Component.extend(FileSaverMixin, {
   init() {
     this._super(...arguments);
 
+    // this.set('application.waitTimerOn', true);
+
+    // Ember.run.schedule('afterRender', () => {
+    //   this.set('application.waitTimerOn', false);
+    // });
+
     this.set('emojiJsonToExport', []);
     this.set('peopleListBackup', []);
     this.set('natureListBackup', []);
@@ -232,7 +241,7 @@ export default Ember.Component.extend(FileSaverMixin, {
     this.set('emojiJson', []);
     this.set('emojiList', []);
 
-    if (this.get('globalServices.hasImportedJson')) {
+    if (this.get('application.hasImportedJson')) {
       this.set('emojiJson', emojiJsonMain);
       this.syncFromImported();
     } else {
@@ -243,6 +252,10 @@ export default Ember.Component.extend(FileSaverMixin, {
     this.setStartIndex();
     console.log('JMT - Reference to component =>', this);
     console.log('JMT - Reference to emojiJson', this.get('emojiJson'));
+  },
+
+  didRender() {
+    this.set('application.waitTimerOn', false);
   },
 
   initCategory() {

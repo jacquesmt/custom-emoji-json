@@ -8,7 +8,7 @@ let App;
 Ember.MODEL_FACTORY_INJECTIONS = true;
 
 App = Ember.Application.extend({
-  globalServices: Ember.inject.service('global-services'),
+  application: Ember.inject.service(),
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
   Resolver

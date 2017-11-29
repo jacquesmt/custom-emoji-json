@@ -10,7 +10,7 @@ const {
 export default Ember.Component.extend({
   classNames: ['emoji-json-upload'],
   fileContent: null,
-  globalServices: inject.service('global-services'),
+  application: inject.service(),
 
   actions: {
     fileLoaded: function(file) {
@@ -20,13 +20,14 @@ export default Ember.Component.extend({
         console.log(file.name, file.type, file.data, file.size);
         // There is also file.filename for backward compatibility
         this.set('fileContent', file.data);
-        this.set('globalServices.sourceName', file.name);
-        this.set('globalServices.importedJson', JSON.parse(file.data));
+        this.set('application.sourceName', file.name);
+        this.set('application.importedJson', JSON.parse(file.data));
     },
     editEmojy: function () {
-      console.log('JMT editing emoji.');
-      this.get('router').transitionTo('main');
-      // window.location.pathname ="/main";
+      this.set('application.waitTimerOn', true);
+      Ember.run.next(this, function () {
+        this.get('router').transitionTo('main');
+      });
     }
   },
 
