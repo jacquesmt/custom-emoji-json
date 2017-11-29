@@ -3,7 +3,7 @@
 {{/if}}
 <h1> Custom Emoji List Generator </h1>
 <ul>
- <li> {{#link-to "main"}} Get started with Emoji 5.0 {{/link-to}}</li>
+ <li> <a class="link-to-main" {{action "loadEmojiList"}}> Get started with Emoji 5.0 </a></li>
  <li> {{#link-to "upload"}} Upload emoji json {{/link-to}} </li>
 </ul>
 {{outlet}}
