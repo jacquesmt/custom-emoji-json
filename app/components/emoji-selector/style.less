@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
 
-  &.empty-search-result .emoji-list,
   &.empty-search-result .emoji-export {
     display:none;
   }
@@ -55,6 +54,22 @@
 
     margin: 0px 15px;
     background-color: dimgray;
+  }
+
+  .emoji-list .not-found-msg {
+    height: 150px;
+    font-variant: small-caps;
+    font-weight: 600;
+    font-size: 80px;
+  }
+
+ &.empty-search-result .emoji-list {
+    justify-content: center;
+ }
+
+  &.empty-search-result .emoji-items {
+    background-color: white;
+    margin: 10px;
   }
 
   .emoji-list-views {

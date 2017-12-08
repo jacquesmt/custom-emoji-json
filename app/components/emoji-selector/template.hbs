@@ -8,7 +8,6 @@
     {{input class="emoji-search" type="text" value=textSearch placeholder="🔍  Search current page"}}
     <div class="emoji-list">
         {{#each filteredSearch as |emoji index|}}
-          {{!-- {{#if (and (gte index startIndex) (lte index endIndex))}} --}}
             <div class="emoji-items">
               <div class="emoji-item emoji-char"> <span>{{emoji.char}}</span></div>
               <div class="emoji-item emoji-description">
@@ -26,7 +25,11 @@
                 <div class="category-item"> {{radio-button checked=emoji.category }}none</div>
               </div>
             </div>
-          {{!-- {{/if}} --}}
+        {{else}}
+            <div class="emoji-items">
+              <img class="not-found-msg" src="404.gif">
+              {{!-- <div class="not-found-msg"> Not Found </div> --}}
+            </div>
         {{/each}}
     </div>
     {{#if (gt numberOfPages.length 1)}}
