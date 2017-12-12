@@ -58,27 +58,27 @@
     <p class="total-count-label"> {{totalSelectedCount}} selected emoji(s).</p>
     <div class="emoji-category-list-item people">
       <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" "people"}}>People ({{peopleList.length}})</a>
-      {{emoji-listing showList=showPeopleList emojiList=peopleList}}
+      {{emoji-listing showList=showPeopleList emojiList=peopleList action='findEmoji'}}
     </div>
 
     <div class="emoji-category-list-item nature">
       <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" "nature"}}>Nature ({{natureList.length}})</a>
-      {{emoji-listing showList=showNatureList emojiList=natureList}}
+      {{emoji-listing showList=showNatureList emojiList=natureList action='findEmoji'}}
     </div>
 
     <div class="emoji-category-list-item objects">
       <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" "objects"}}>Objects ({{objectsList.length}})</a>
-      {{emoji-listing showList=showObjectsList emojiList=objectsList}}
+      {{emoji-listing showList=showObjectsList emojiList=objectsList action='findEmoji'}}
     </div>
 
     <div class="emoji-category-list-item places">
       <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" "places"}}>Places ({{placesList.length}})</a>
-      {{emoji-listing showList=showPlacesList emojiList=placesList}}
+      {{emoji-listing showList=showPlacesList emojiList=placesList action='findEmoji'}}
     </div>
 
     <div class="emoji-category-list-item symbols">
       <a href="#" target="_blank" class="emoji-category-list-label" {{action "toggleList" "symbols"}}>Symbols ({{symbolsList.length}})</a>
-      {{emoji-listing showList=showSymbolsList emojiList=symbolsList}}
+      {{emoji-listing showList=showSymbolsList emojiList=symbolsList action='findEmoji'}}
     </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 {{#liquid-if showList class='animate'}}
    <ol class="category-list">
      {{#each emojiList as |emoji|}}
-       <li> <span class="char-emoji">{{emoji.char}}</span><span class="name-emoji">{{emoji.name}}</span></li>
+       <li class='emoji-item' {{action 'findEmoji' emoji.code}}> <span class="char-emoji">{{emoji.char}}</span><span class="name-emoji">{{emoji.name}}</span></li>
      {{/each}}
   </ol>
 {{/liquid-if}}

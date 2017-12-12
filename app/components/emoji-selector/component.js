@@ -6,7 +6,8 @@ import FileSaverMixin from 'ember-cli-file-saver/mixins/file-saver';
 const {
   computed,
   inject,
-  observer
+  observer,
+  run
 } = Ember;
 
 export default Ember.Component.extend(FileSaverMixin, {
@@ -55,13 +56,18 @@ export default Ember.Component.extend(FileSaverMixin, {
           return;
       }
     },
+
+    findEmoji(code) {
+      this.performAutoSearch(code, 0);
+    },
+
     generateJson() {
       this.generateJson();
     },
 
     handlePageChange(page) {
       this.set('application.waitTimerOn', true);
-      Ember.run.next(this, function () {
+      run.next(this, function () {
         this.performCategoryListBackup();
         let newPage;
         if (page === 'prev') {
@@ -89,6 +95,26 @@ export default Ember.Component.extend(FileSaverMixin, {
         console.log('Start index is ', this.get('startIndex'));
       });
     }
+  },
+
+  goToPage(page, searchKey) {
+      this.get('actions').handlePageChange.call(this, page);
+      run.next(this, this.performAutoSearch, searchKey);
+  },
+
+  performAutoSearch(searchKey, page) {
+
+    page = (page === undefined || page === null)? this.get('currentPage') : page;
+
+    this.set('textSearch', searchKey);
+
+    console.log('JMT - trying page ', page);
+
+    if (this.get('filteredSearch.length') > 0 || page >= this.get('numberOfPages.length')) {
+      return;
+    }
+
+    this.goToPage(page+1, searchKey);
   },
 
   sourceName: computed('application.sourceName', function () {

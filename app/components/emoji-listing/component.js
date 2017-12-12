@@ -7,6 +7,9 @@ export default Ember.Component.extend({
   actions: {
     toggleList() {
       this.toggleProperty('showList');
+    },
+    findEmoji(code) {
+      this.sendAction('action', code);
     }
   },
 
