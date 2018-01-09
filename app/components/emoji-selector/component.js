@@ -23,6 +23,7 @@ export default Ember.Component.extend(FileSaverMixin, {
   showPlacesList: false,
   showSymbolsList: false,
   emojiJsonToExport: null,
+  textInput: null,
   textSearch: null,
   fileName: 'emoji-generated.json',
   contentType: "text/plain; charset=utf-8",
@@ -37,6 +38,16 @@ export default Ember.Component.extend(FileSaverMixin, {
   currentPage:1,
 
   actions: {
+    clearSearch() {
+      this.set('application.waitTimerOn', true);
+      let input = this.$('.emoji-search');
+      input.val('');
+      this.get('actions').handlePageChange.call(this, 1);
+      run.next(this, function() {
+        this.set('textSearch', null);
+      });
+    },
+
     toggleList(list) {
       switch (list) {
         case 'people':
@@ -91,8 +102,6 @@ export default Ember.Component.extend(FileSaverMixin, {
         this.setStartIndex();
         $('.emoji-list').scrollTop(0);
 
-        console.log('Current page is', page);
-        console.log('Start index is ', this.get('startIndex'));
       });
     }
   },
@@ -108,14 +117,19 @@ export default Ember.Component.extend(FileSaverMixin, {
 
     this.set('textSearch', searchKey);
 
-    console.log('JMT - trying page ', page);
-
     if (this.get('filteredSearch.length') > 0 || page >= this.get('numberOfPages.length')) {
       return;
     }
 
     this.goToPage(page+1, searchKey);
   },
+
+  textInputTrigger: observer('textInput', function() {
+    const searchKey = this.get('textInput');
+    run.debounce(this, function () {
+      this.performAutoSearch(searchKey, 0);
+    }, 50);
+  }),
 
   sourceName: computed('application.sourceName', function () {
     if (this.get('application.sourceName')) {

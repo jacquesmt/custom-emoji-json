@@ -5,7 +5,8 @@
 </div>
 <div class="emoji-list-views">
   <div class="emoji-list-wrapper">
-    {{input class="emoji-search" type="text" value=textSearch placeholder="🔍  Search current page"}}
+    {{input class="emoji-search" type="text" value=textInput placeholder="🔍  Search"}}
+    <a target="_blank" class="clear-emoji-search" {{action "clearSearch"}}>Clear search results</a>
     <div class="emoji-list">
         {{#each filteredSearch as |emoji index|}}
             <div class="emoji-items">
