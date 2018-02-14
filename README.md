@@ -41,3 +41,24 @@ You will need the following things properly installed on your computer.
 * Development Browser Extensions
   * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
   * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
+
+## Thanks to [emoji.json](https://github.com/amio/emoji.json/tree/d7d6adc5fe441d2c0df59b42caeadb8ad4eacade) package
+for the following script that gets the source emoji json needed from [Full Emoji List](http://unicode.org/emoji/charts/full-emoji-list.html) 
+
+```javascript
+{
+  const { $$, copy } = window // Chrome Console API
+  const ids = $$('td.rchars')
+  const trs = ids.map(e => e.parentElement).filter(x => x.children.length === 15)
+  const db = trs.map(tr => {
+    const tds = tr.children
+    return {
+      no: parseInt(tds[0].innerText),
+      code: tds[1].innerText.replace(/U\+/g, ''),
+      char: tds[2].innerText,
+      name: tds[14].innerText
+    }
+  })
+  copy(JSON.stringify(db, null, 2))
+}
+```
